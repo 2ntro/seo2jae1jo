@@ -1,0 +1,9 @@
+﻿  Building 'scanner' with toolset 'WindowsKernelModeDriver10.0' and the 'Universal' target platform.
+  scanner.c
+  scanner.vcxproj -> C:\Users\LEE\Documents\GitHub\Windows-driver-samples-master\filesys\miniFilter\scanner - 복사본\filter\x64\Debug\scanner.sys
+  Done Adding Additional Store
+  Successfully signed: C:\Users\LEE\Documents\GitHub\Windows-driver-samples-master\filesys\miniFilter\scanner - \filter\x64\Debug\scanner.sys
+  
+  Driver is 'Universal'.
+  Inf2Cat task was skipped as there were no inf files to process
+  
