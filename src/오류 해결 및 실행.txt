@@ -1,9 +1,0 @@
-===================실행방법================
-1. filter/x64/debug/scanner.sys와 scanner.inf를 한 폴더에 두고 scanner.inf 우클릭 컨텍스트메뉴에서 설치
-2. scanner.sys가 설치되면 cmd에서 sc start scanner 드라이버 실행
-3. scanuser.exe를 실행시키기위해 fltmc load scanner로 필터매니저에 미니필터드라이버 등록
-4. cmd에서 scanuser.exe
-5. Foul이 들어있는 텍스트파일 open시 차단됨
-
-===================오류==================
-1. cmd는 관리자 권한에서 실행되어야함

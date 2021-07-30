@@ -1,2 +1,0 @@
-C:\Users\LEE\Documents\GitHub\Windows-driver-samples-master\filesys\miniFilter\scanner\user\x64\Debug\scanuser.exe
-C:\Users\LEE\Documents\GitHub\Windows-driver-samples-master\filesys\miniFilter\scanner - 복사본\user\x64\Debug\scanuser.exe
