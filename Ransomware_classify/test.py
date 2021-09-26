@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 from gensim.models.doc2vec import Doc2Vec, TaggedDocument
 from sklearn.metrics import roc_curve, f1_score, accuracy_score, precision_score, recall_score, confusion_matrix
 import numpy as np
+import data_process as dp
 
 
 def roc_curve_plot(y_test, pred_proba_c1):
@@ -45,53 +46,15 @@ Doc2vec 형태의 모델 만들기!!!!!!!!!
 '''
 
 # train할 모델을 만든뒤 tsne 로 시각화 시킨후 테스트를 할것이다.
-os.chdir('C:/sharedfolder/testmodel')  # 작업할 디렉토리 설정
+os.chdir('C:/Users/tjgml/OneDrive/문서/GitHub/seo2jae1jo/Ransomware_classify/testmodel')#작업할 디렉토리 설정
+test_software_path = './test_software_behavior_api_order.csv'
+test_malware_path = './test_behavior_api_order.csv'
+model_name = "../Doc2vec_model_vector30_window15_dm0"
 
-# 가장먼저 추출한 문자열 들을 가지고 옴
-def make_Doc2Vec(software_sentences, ransomware_sentences):
-    with open('./test_software_behavior_api_order.csv', 'r', encoding='utf-8') as f:
-        lines = csv.reader(f)
-        software_sentences = [line for line in lines]
-    with open('./test_behavior_api_order.csv', 'r', encoding='utf-8') as f:
-        lines = csv.reader(f)
-        ransomware_sentences = [line for line in lines]
 
-    features = []  # 만약 추출할게 없다면 비워놔도 됨. 대신 생성은 해놓기.. 추후 수정.
-
-    # doc2vec로 학습을 시키기 위해선 (words , tag 가 필요함)
-    tagged_data = []
-    # word = ['word1', 'word2', 'word3', 'word4'....], tags = ['software_숫자'] 소프트웨어
-
-    for i, sentence in enumerate(software_sentences):
-         tagged_data.append(TaggedDocument(words=featureset_remove_fun(sentence, features)
-                                           , tags=['software_' + str(i)]))
-
-    # word = ['word1', 'word2', 'word3', 'word4'....], tags = ['malware_숫자'] 악성코드
-    for i, sentence in enumerate(ransomware_sentences):
-        tagged_data.append(TaggedDocument(words=featureset_remove_fun(sentence, features)
-                                          , tags=['malware_' + str(i)]))
-
-    return software_sentences, ransomware_sentences
-
-# 학습에 사용할 모델 load 시킴
-doc2vec_model_name = "../Doc2vec_model_vector30_window15_dm0"
-model = Doc2Vec.load(doc2vec_model_name)
-
-software_sentences, ransomware_sentences = make_Doc2Vec(software_sentences=[], ransomware_sentences=[])
-
-software_vector = [model.infer_vector(sentence,alpha=0.025,min_alpha=0.025, epochs=30)
-                 for sentence in software_sentences]
-ransomware_vector = [model.infer_vector(sentence,alpha=0.025,min_alpha=0.025, epochs=30)
-                 for sentence in ransomware_sentences]
-
-software_arrays = np.array(software_vector)
-software_labels = np.zeros(len(software_vector)) # 어처피 소프트웨어니까 0으로 초기화 시킬꺼임
-
-ransomware_arrays = np.array(ransomware_vector)
-ransomware_labels = np.ones(len(ransomware_vector))  # 어처피 악성코드니까 1으로 초기화 시킬꺼임
-
-test_data = np.vstack((software_arrays,ransomware_arrays))
-test_labels = np.hstack((software_labels,ransomware_labels))
+test_software_sentences, test_malware_sentences = dp.make_Doc2Vec(test_software_path, test_malware_path,
+                                                        software_sentences=[], malware_sentences=[])
+test_data, test_labels = dp.make_data(model_name, test_software_sentences, test_malware_sentences)
 
 import xgboost as xgb
 from sklearn.model_selection import KFold

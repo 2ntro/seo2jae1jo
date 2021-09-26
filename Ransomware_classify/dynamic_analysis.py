@@ -2,15 +2,12 @@ import os
 import json
 import glob
 import pandas as pd
-import ast
-import matplotlib.pyplot as plt
 import csv
 import numpy as np
 
 
 os.chdir('C:\sharedfolder') #작업하고 있는 디렉토리 변경
 os.getcwd()
-os.listdir('./cuckoo_json_malware')#현재 폴더의 파일들 목록
 
 class FeatureExtraction:
     '''
@@ -100,71 +97,23 @@ class FeatureExtraction:
         except Exception as e:
             return pd.DataFrame(index=[self.md5])#apistats가 비어있을 경우 index 만 추출
 
-
-
-
-'''
-일단 malware sample이 호출하는 모든 api 데이터들을 한줄로 모아야한다.
-apistats의 데이터프레임을 추출한뒤 csv파일로 저장 / 이건 일종의 순서쌍이지
-'''
-folder_path = './cuckoo_json_malware/' #추출할 폴더
-df = pd.DataFrame()#저장할 데이터 프레임 생성
-for input_folder in glob.glob(folder_path+'*'):#현재 폴더의 모든 파일이름 추출
-    for input_file in glob.glob(input_folder+'./*'):
-        print(input_file)
-        feature = FeatureExtraction(input_file)
-        df = feature.apistats_dataframe
-        df.to_csv("apistats.csv",mode='a')
-
-
-'''
-pe_imports의 데이터프레임을 추출한뒤 csv파일로 저장
-'''
-
-folder_path = './cuckoo_json_malware/' #추출할 폴더
-df = pd.DataFrame()#저장할 데이터 프레임 생성
-for input_folder in glob.glob(folder_path+'*'):#현재 폴더의 모든 파일이름 추출
-    for input_file in glob.glob(input_folder+'./*'):
-        print(input_file)
-        feature = FeatureExtraction(input_file)
-        df = feature.apistats_dataframe
-        df.to_csv("pe_imports.csv", mode='a')
-
-
-#csv 파일 만들기  /software_feature/filename.csv
-
 '''
 api 호출 순서대로 나열 된 리스트 파일
 만약 추출이 안된 [] 비어있는 리스트라면 저장 하지 않음.
 추후 Doc2Vec에 사용될 csv 파일들.
 '''
-folder_path = './cuckoo_json_malware/' #추출할 파일들을 가져오는폴더
+folder_path = './cuckoo_json_malware_test' #추출할 파일들을 가져오는폴더
 
-f = open('behavior_api_order_set.csv', 'w', encoding='utf-8', newline='')
-api_call_total = []
-
-for input_folder in glob.glob(folder_path+'*'):#현재 폴더의 모든 파일이름 추출
-    for input_file in glob.glob(input_folder+'./*'):#현재 폴더의 모든 파일이름 추출
+f = open('test_behavior_api_order.csv', 'w', encoding='utf-8', newline='')
+num = 1
+for input_folder in glob.glob(folder_path+'./*'):#현재 폴더의 모든 파일이름 추출
+    for input_file in glob.glob(input_folder+'./*'):
+        print(input_file)
         feature = FeatureExtraction(input_file)
         if len(feature.get_behavior_api_order) == 0:
             continue
         else:
-            #wr = csv.writer(f)
-            behavior_api_order_set = set(feature.get_behavior_api_order)
-            behavior_api_order_set = list(behavior_api_order_set)
-            api_call_total.append(behavior_api_order_set)
-            #wr.writerow(behavior_api_order_set)
-
-api_call_total = sum(api_call_total, [])
-api_call_total = set(api_call_total)
-print(len(api_call_total))
-
-f = open('behavior_api_order.csv', 'w', encoding='utf-8', newline='')
-for input_file in glob.glob(folder_path+'*'):#현재 폴더의 모든 파일이름 추출
-    feature = FeatureExtraction(input_file)
-    if len(feature.get_behavior_api_order) == 0:
-        continue
-    else:
-        wr = csv.writer(f)
-        wr.writerow(feature.get_behavior_api_order)
+            wr = csv.writer(f)
+            wr.writerow(feature.get_behavior_api_order)
+        num+=1
 f.close()
